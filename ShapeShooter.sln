@@ -2,12 +2,18 @@
 Microsoft Visual Studio Solution File, Format Version 11.00
 # Visual Studio 2010
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Client", "Client\Client\Client.csproj", "{1AF46B8E-9689-4C21-84E9-30EBEF624F2A}"
+	ProjectSection(ProjectDependencies) = postProject
+		{64A0543D-7194-4897-AFDB-9F21F01A4270} = {64A0543D-7194-4897-AFDB-9F21F01A4270}
+	EndProjectSection
 EndProject
-Project("{96E2B04D-8817-42C6-938A-82C39BA4D311}") = "ClientContent", "Client\ClientContent\ClientContent.contentproj", "{BA2E50D3-1533-4283-AA45-77D4F47D3A86}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ClientContent", "Client\ClientContent\ClientContent.contentproj", "{BA2E50D3-1533-4283-AA45-77D4F47D3A86}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Common", "Common\Common.csproj", "{64A0543D-7194-4897-AFDB-9F21F01A4270}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Server", "Server\Server.csproj", "{3CFEE540-89C2-4F58-BD7F-78F5F4E67696}"
+	ProjectSection(ProjectDependencies) = postProject
+		{64A0543D-7194-4897-AFDB-9F21F01A4270} = {64A0543D-7194-4897-AFDB-9F21F01A4270}
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

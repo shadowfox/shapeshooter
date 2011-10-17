@@ -11,6 +11,7 @@ namespace Common
         None = 0,
         Special = 1,
         PlayerList = 2,
+        PlayerJoin = 3,
     }
 
     public struct S_PlayerListMessage : ISendable
@@ -39,6 +40,23 @@ namespace Common
                 // RUI
                 msg.Write(kvp.Key);
             }
+        }
+    }
+
+    public struct S_PlayerJoinMessage : ISendable
+    {
+        public MessageType MessageType { get { return MessageType.PlayerJoin; } }
+        public long PlayerRUI;
+
+        public void Read(NetIncomingMessage msg)
+        {
+            this.PlayerRUI = msg.ReadInt64();
+        }
+
+        public void Write(NetOutgoingMessage msg)
+        {
+            msg.Write((byte)this.MessageType);
+            msg.Write(this.PlayerRUI);
         }
     }
 

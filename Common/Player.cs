@@ -5,12 +5,13 @@ namespace Common
 {
     public class Player
     {
-        private long RUI;
-        public string ID { get { return NetUtility.ToHexString(this.RUI); } }
+        private long _RUI;
+        public long RUI { get { return _RUI; } }
+        public string ID { get { return NetUtility.ToHexString(this._RUI); } }
 
         public Player(long RUI)
         {
-            this.RUI = RUI;
+            this._RUI = RUI;
         }
 
         public override string ToString()

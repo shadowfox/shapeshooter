@@ -120,6 +120,15 @@ namespace Server
                             };
                             playerListMessage.Write(om);
                             server.SendMessage(om, msg.SenderConnection, NetDeliveryMethod.ReliableUnordered);
+
+                            // Tell all other players about the newly joined player.
+                            om = server.CreateMessage();
+                            S_PlayerJoinMessage playerJoinMessage = new S_PlayerJoinMessage()
+                            {
+                                PlayerRUI = player.RUI
+                            };
+                            playerJoinMessage.Write(om);
+                            server.SendToAll(om, msg.SenderConnection, NetDeliveryMethod.ReliableUnordered, 0);
                         }
                         else if (status == NetConnectionStatus.Disconnected || status == NetConnectionStatus.Disconnecting)
                         {

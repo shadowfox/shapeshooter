@@ -216,8 +216,15 @@ namespace Client
             log.Info("Got data message: {0}", msg);
 
             MessageType type = (MessageType)msg.ReadByte();
+            log.Info("Message is of type {0}", type);
             switch (type)
             {
+                case MessageType.PlayerJoin:
+                    // A new player has joined, so add it to the local dictionary.
+                    S_PlayerJoinMessage playerJoinMessage = new S_PlayerJoinMessage();
+                    playerJoinMessage.Read(msg);
+                    PlayerManager.Add(playerJoinMessage.PlayerRUI, new Player(playerJoinMessage.PlayerRUI));
+                    break;
                 case MessageType.PlayerList:
                     S_PlayerListMessage playerListMessage = new S_PlayerListMessage();
                     playerListMessage.Read(msg);

@@ -21,11 +21,30 @@ namespace Client
     {
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
+        private Logger log;
+
+        // Networking related members
+        private NetClient client;
+        private NetPeerConfiguration config;
+        private NetIncomingMessage msg;
+
+        // Network client config
+        private string appName = "testgame";
+        private string serverAddress = "localhost";
+        private int serverPort = 42421;
+        private string serverName = "";
 
         public Game()
         {
+            log = new Logger();
+            log.Info("Setting up game...");
             graphics = new GraphicsDeviceManager(this);
             Content.RootDirectory = "Content";
+
+            config = new NetPeerConfiguration(appName);
+            config.EnableMessageType(NetIncomingMessageType.DiscoveryResponse);
+
+            client = new NetClient(config);
         }
 
         /// <summary>
@@ -36,9 +55,20 @@ namespace Client
         /// </summary>
         protected override void Initialize()
         {
-            // TODO: Add your initialization logic here
-
+            log.Info("Initialising...");
             base.Initialize();
+
+            try
+            {
+                client.Start();
+                log.Info("Started network client with status: {0}", client.Status);
+                log.Info("Sending discovery request to {0}:{1}", serverAddress, serverPort);
+                client.DiscoverKnownPeer(serverAddress, serverPort);
+            }
+            catch (Exception e)
+            {
+                log.Error("Failed to start client. Exception:\n{0}", e);
+            }
         }
 
         /// <summary>
@@ -73,7 +103,7 @@ namespace Client
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed)
                 this.Exit();
 
-            // TODO: Add your update logic here
+            handleMessages();
 
             base.Update(gameTime);
         }
@@ -89,6 +119,70 @@ namespace Client
             // TODO: Add your drawing code here
 
             base.Draw(gameTime);
+        }
+
+        /// <summary>
+        /// Main client message receive loop.
+        /// </summary>
+        private void handleMessages()
+        {
+            while ((msg = client.ReadMessage()) != null)
+            {
+                switch (msg.MessageType)
+                {
+                    case NetIncomingMessageType.Data:
+                        handleDataMessage(msg);
+                        break;
+                    case NetIncomingMessageType.StatusChanged:
+                        NetConnectionStatus status = (NetConnectionStatus)msg.ReadByte();
+                        log.Info("StatusChanged: {0}", status);
+                        break;
+                    case NetIncomingMessageType.DiscoveryResponse:
+                        handleDiscoveryResponseMessage(msg);
+                        break;
+                    case NetIncomingMessageType.VerboseDebugMessage:
+                    case NetIncomingMessageType.DebugMessage:
+                    case NetIncomingMessageType.WarningMessage:
+                    case NetIncomingMessageType.ErrorMessage:
+                        log.Info("Message from server: {0}", msg);
+                        break;
+                    default:
+                        log.Info("Unhandled message type: {0}", msg.MessageType);
+                        break;
+                }
+                client.Recycle(msg);
+            }
+        }
+
+        /// <summary>
+        /// Handle a discovery response sent to us from the server in response to our discovery request.
+        /// Now its time to attempt a connection.
+        /// </summary>
+        /// <param name="msg"></param>
+        private void handleDiscoveryResponseMessage(NetIncomingMessage msg)
+        {
+            try
+            {
+                log.Info("Received a discovery response from {0}; attempting to connect...", msg.SenderEndpoint);
+                if (client.Connect(msg.SenderEndpoint) != null)
+                {
+                    serverName = msg.ReadString();
+                    log.Info("Connection with '{0}' at {1} established!", serverName, msg.SenderEndpoint);
+                }
+                else
+                {
+                    log.Error("Failed to connect to server at {0}", msg.SenderEndpoint);
+                }
+            }
+            catch (Exception e)
+            {
+                log.Error("Failed to connect to server at {0}. Exception: {1}", msg.SenderEndpoint, e);
+            }
+        }
+
+        private void handleDataMessage(NetIncomingMessage msg)
+        {
+            log.Info("Got data message: {0}", msg);
         }
     }
 }

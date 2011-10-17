@@ -51,12 +51,11 @@ namespace Common
 
         public override string ToString()
         {
-            String str = "\r\n---------- Player List ----------";
+            String str = String.Format("{0} Players:", this.Count);
             foreach (Player player in players.Values)
             {
                 str += player.ToString() + "\n";
             }
-            str += "---------------------------------\n";
             return str;
         }
     }

@@ -31,6 +31,11 @@ namespace Client
         }
         private NetPeerConfiguration config;
         private NetIncomingMessage msg;
+        private PlayerManager playerManager;
+        public PlayerManager PlayerManager
+        {
+            get { return this.playerManager; }
+        }
 
         // Network client config
         private string appName = "testgame";
@@ -50,9 +55,16 @@ namespace Client
 
             client = new NetClient(config);
 
+            // Start with an empty player manager.
+            playerManager = new PlayerManager();
+
             NetDebugComponent netDebugComponent = new NetDebugComponent(this, ref client);
             this.Components.Add(netDebugComponent);
             netDebugComponent.Visible = true;
+
+            PlayerListDebugComponent playerListDebugComponent = new PlayerListDebugComponent(this, ref playerManager);
+            this.Components.Add(playerListDebugComponent);
+            playerListDebugComponent.Visible = true;
         }
 
         /// <summary>

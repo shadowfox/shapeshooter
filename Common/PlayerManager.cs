@@ -11,6 +11,11 @@ namespace Common
     {
         private Dictionary<long, Player> players;
 
+        public Dictionary<long, Player> Players
+        {
+            get { return this.players; }
+        }
+
         public int Count
         {
             get { return this.players.Count; }
@@ -47,6 +52,30 @@ namespace Common
         {
             players.Remove(RUI);
         }
+
+        /// <summary>
+        /// Updates the master player list with new items.
+        /// Only new players are added; players with existing keys will be ignored.
+        /// </summary>
+        /// <param name="newPlayers">The dictonary of new players to add</param>
+        public void AddAll(Dictionary<long, Player> newPlayers)
+        {
+            foreach (KeyValuePair<long, Player> kvp in newPlayers)
+            {
+                if (!this.players.ContainsKey(kvp.Key))
+                {
+                    this.players.Add(kvp.Key, kvp.Value);
+                }
+            }
+        }
+
+        /// <summary>
+        /// Replaces the currently players dictionary with a new empty one
+        /// </summary>
+        public void Clear()
+        {
+            this.players = new Dictionary<long, Player>();
+        }
         #endregion
 
         public override string ToString()
@@ -54,7 +83,7 @@ namespace Common
             String str = String.Format("{0} Players:", this.Count);
             foreach (Player player in players.Values)
             {
-                str += player.ToString() + "\n";
+                str += "\n" + player.ToString();
             }
             return str;
         }

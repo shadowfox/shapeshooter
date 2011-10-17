@@ -13,7 +13,9 @@ namespace Client
     public class PlayerListDebugComponent : DrawableGameComponent
     {
         private SpriteBatch spriteBatch;
+        private Game game;
         private PlayerManager playerManager;
+        private Player localPlayer;
         public Vector2 position;
         public bool Visible = false;
 
@@ -21,6 +23,7 @@ namespace Client
             : base(game)
         {
             this.playerManager = playerManager;
+            this.game = game;
             this.position = new Vector2(5, 110);
         }
 
@@ -70,7 +73,9 @@ namespace Client
         /// <returns>The completed string</returns>
         private string getPlayerListString()
         {
-            return this.playerManager.ToString();
+            String str = String.Format("I am {0}\n", (game.LocalPlayer != null) ? game.LocalPlayer.ToString() : "nobody");
+            str += this.playerManager.ToString();
+            return str;
         }
     }
 }

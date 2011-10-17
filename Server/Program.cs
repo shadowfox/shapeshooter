@@ -24,6 +24,8 @@ namespace Server
         private static string serverName = "Test Game Server";
         private static bool isShuttingDown = false;
 
+        private static PlayerManager playerManager;
+
         /// <summary>
         /// Server entry point
         /// </summary>
@@ -62,6 +64,7 @@ namespace Server
             // ConnectionApproval received once a client runs Connect(); must be explicitly approved or denied.
             config.EnableMessageType(NetIncomingMessageType.ConnectionApproval);
 
+            playerManager = new PlayerManager();
             server = new NetServer(config);
             try
             {
@@ -102,6 +105,21 @@ namespace Server
                         if (status == NetConnectionStatus.Connected)
                         {
                             log.Info("====> {0} connected ({1})", Helper.getRemoteTag(msg), msg.ReadString());
+
+                            // Add the new player to the player list.
+                            Player player = new Player(msg.SenderConnection.RemoteUniqueIdentifier);
+                            playerManager.Add(msg.SenderConnection.RemoteUniqueIdentifier, player);
+
+                            // Send them a list of all players in the game.
+                            // They will already know their unique identifier.
+                            NetOutgoingMessage om = server.CreateMessage();
+                            S_PlayerListMessage playerListMessage = new S_PlayerListMessage()
+                            {
+                                PlayerCount = playerManager.Count,
+                                Players = playerManager.Players
+                            };
+                            playerListMessage.Write(om);
+                            server.SendMessage(om, msg.SenderConnection, NetDeliveryMethod.ReliableUnordered);
                         }
                         else if (status == NetConnectionStatus.Disconnected || status == NetConnectionStatus.Disconnecting)
                         {

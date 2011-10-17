@@ -37,6 +37,13 @@ namespace Client
             get { return this.playerManager; }
         }
 
+        // The player object belonging to this client.
+        private Player localPlayer = null;
+        public Player LocalPlayer
+        {
+            get { return this.localPlayer; }
+        }
+
         // Network client config
         private string appName = "testgame";
         private string serverAddress = "localhost";
@@ -156,6 +163,10 @@ namespace Client
                     case NetIncomingMessageType.StatusChanged:
                         NetConnectionStatus status = (NetConnectionStatus)msg.ReadByte();
                         log.Info("StatusChanged: {0} ({1})", status, msg.ReadString());
+                        if (status == NetConnectionStatus.Disconnected || status == NetConnectionStatus.Disconnecting)
+                        {
+                            clearData();
+                        }
                         break;
                     case NetIncomingMessageType.DiscoveryResponse:
                         handleDiscoveryResponseMessage(msg);
@@ -210,11 +221,29 @@ namespace Client
                 case MessageType.PlayerList:
                     S_PlayerListMessage playerListMessage = new S_PlayerListMessage();
                     playerListMessage.Read(msg);
+                    log.Info("playersCount: {0}", playerListMessage.PlayerCount);
+                    playerManager.AddAll(playerListMessage.Players);
+                    // Find and set the local player from the players list.
+                    if (!playerManager.Players.TryGetValue(client.UniqueIdentifier, out localPlayer))
+                    {
+                        // This should never happen.
+                        log.Error("Unable to find local player in player list");
+                        client.Disconnect("Error");
+                    }
                     break;
                 default:
                     log.Error("Unknown message type: {0}", type);
                     break;
             }
+        }
+
+        /// <summary>
+        /// Clear all of the client's data so things are clean for a reconnect.
+        /// </summary>
+        private void clearData()
+        {
+            localPlayer = null;
+            playerManager.Clear();
         }
     }
 }

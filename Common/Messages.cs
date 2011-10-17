@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Lidgren.Network;
 using Lidgren.Network.Xna;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 
 namespace Common
 {
@@ -20,6 +21,8 @@ namespace Common
         public int PlayerCount;
         public Dictionary<long, Player> Players;
 
+        public Texture2D playerTexture;
+
         public void Read(NetIncomingMessage msg)
         {
             this.PlayerCount = msg.ReadInt32();
@@ -27,7 +30,7 @@ namespace Common
             for (int i = 0; i < this.PlayerCount; i++)
             {
                 long RUI = msg.ReadInt64();
-                this.Players.Add(RUI, new Player(RUI, true));
+                this.Players.Add(RUI, new Player(RUI, playerTexture));
             }
         }
 

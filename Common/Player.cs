@@ -1,5 +1,6 @@
 ﻿using System;
 using Lidgren.Network;
+using Microsoft.Xna.Framework.Graphics;
 
 namespace Common
 {
@@ -16,11 +17,11 @@ namespace Common
             this._RUI = RUI;
         }
 
-        public Player(long RUI, bool includeSprite)
+        public Player(long RUI, Texture2D texture)
         {
             this._RUI = RUI;
-            if (includeSprite)
-                this.Sprite = new Sprite();
+            if (texture != null)
+                this.Sprite = new Sprite(texture);
         }
 
         public override string ToString()

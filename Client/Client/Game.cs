@@ -223,10 +223,11 @@ namespace Client
                     // A new player has joined, so add it to the local dictionary.
                     S_PlayerJoinMessage playerJoinMessage = new S_PlayerJoinMessage();
                     playerJoinMessage.Read(msg);
-                    PlayerManager.Add(playerJoinMessage.PlayerRUI, new Player(playerJoinMessage.PlayerRUI, true));
+                    PlayerManager.Add(playerJoinMessage.PlayerRUI, new Player(playerJoinMessage.PlayerRUI, Resources.playerTexture));
                     break;
                 case MessageType.PlayerList:
                     S_PlayerListMessage playerListMessage = new S_PlayerListMessage();
+                    playerListMessage.playerTexture = Resources.playerTexture;
                     playerListMessage.Read(msg);
                     log.Info("playersCount: {0}", playerListMessage.PlayerCount);
                     playerManager.AddAll(playerListMessage.Players);

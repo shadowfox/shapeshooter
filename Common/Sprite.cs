@@ -86,6 +86,13 @@ namespace Common
             get { return texture.Height; }
         }
 
+        public Sprite() { }
+
+        public Sprite(Texture2D texture)
+        {
+            this.LoadContent(texture);
+        }
+
         // Load the texture for the sprite using the Content Pipeline.
         public void LoadContent(ContentManager contentManager, string assetName)
         {

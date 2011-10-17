@@ -17,12 +17,12 @@ namespace Client
     /// <summary>
     /// This is the main type for your game
     /// </summary>
-    public class Client : Microsoft.Xna.Framework.Game
+    public class Game : Microsoft.Xna.Framework.Game
     {
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
 
-        public Client()
+        public Game()
         {
             graphics = new GraphicsDeviceManager(this);
             Content.RootDirectory = "Content";

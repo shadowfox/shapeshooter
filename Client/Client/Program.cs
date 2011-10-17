@@ -9,9 +9,9 @@ namespace Client
         /// </summary>
         static void Main(string[] args)
         {
-            using (Client client = new Client())
+            using (Game game = new Game())
             {
-                client.Run();
+                game.Run();
             }
         }
     }

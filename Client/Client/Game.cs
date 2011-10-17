@@ -50,6 +50,26 @@ namespace Client
         private int serverPort = 42421;
         private string serverName = "";
 
+        // Input data.
+        KeyboardState keyboardState;
+
+        enum Input : byte
+        {
+            None = 0,
+            Up,
+            Down,
+            Left,
+            Right
+        }
+
+        Input lastVInput = Input.None;
+        Input currentVInput = Input.None;
+        Input lastHInput = Input.None;
+        Input currentHInput = Input.None;
+
+        String vInput = "";
+        String hInput = "";
+
         public Game()
         {
             log = new Logger();
@@ -126,9 +146,38 @@ namespace Client
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Update(GameTime gameTime)
         {
+            keyboardState = Keyboard.GetState();
+
             // Allows the game to exit
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed)
                 this.Exit();
+
+            // Default to no input before we check.
+            currentHInput = Input.None;
+            currentVInput = Input.None;
+
+            // Get the player's current input.
+            if (keyboardState.IsKeyDown(Keys.Up))
+                currentVInput = Input.Up;
+            if (keyboardState.IsKeyDown(Keys.Down))
+                currentVInput = Input.Down;
+            if (keyboardState.IsKeyDown(Keys.Left))
+                currentHInput = Input.Left;
+            if (keyboardState.IsKeyDown(Keys.Right))
+                currentHInput = Input.Right;
+
+            // Only send input data to the server if its different to the previous state.
+            if (currentVInput != lastVInput)
+            {
+                vInput = String.Format("VERTICAL was {0} | now {1}", lastVInput, currentVInput);
+                lastVInput = currentVInput;
+            }
+
+            if (currentHInput != lastHInput)
+            {
+                hInput = String.Format("HORIZONTAL was {0} | now {1}", lastHInput, currentHInput);
+                lastHInput = currentHInput;
+            }
 
             handleMessages();
 
@@ -146,6 +195,9 @@ namespace Client
             spriteBatch.Begin();
 
             playerManager.Draw(spriteBatch);
+
+            spriteBatch.DrawString(Resources.debugFont, vInput, new Vector2(500, 5), Color.Gray);
+            spriteBatch.DrawString(Resources.debugFont, hInput, new Vector2(500, 20), Color.Gray);
 
             spriteBatch.End();
 

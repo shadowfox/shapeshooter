@@ -143,7 +143,11 @@ namespace Client
         {
             GraphicsDevice.Clear(Color.Black);
 
-            // TODO: Add your drawing code here
+            spriteBatch.Begin();
+
+            playerManager.Draw(spriteBatch);
+
+            spriteBatch.End();
 
             base.Draw(gameTime);
         }
@@ -238,7 +242,7 @@ namespace Client
                         log.Error("Unable to find local player in player list");
                         client.Disconnect("Error");
                     }
-                    localPlayer.Sprite = new Sprite();
+                    localPlayer.Sprite = new Sprite(Resources.playerTexture);
                     break;
                 default:
                     log.Error("Unknown message type: {0}", type);

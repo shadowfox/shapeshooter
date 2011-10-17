@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 
 namespace Common
 {
@@ -30,6 +31,14 @@ namespace Common
         {
             // Initialise the player list.
             players = new Dictionary<long, Player>();
+        }
+
+        public void Draw(SpriteBatch spriteBatch)
+        {
+            foreach (Player player in players.Values)
+            {
+                player.Sprite.Draw(spriteBatch);
+            }
         }
 
         #region Public dictionary access methods

@@ -19,9 +19,13 @@ namespace Common
 
         public Player(long RUI, Texture2D texture)
         {
+            Console.WriteLine("Player() called including texture " + texture);
             this._RUI = RUI;
             if (texture != null)
-                this.Sprite = new Sprite(texture);
+            {
+                this.Sprite = new Sprite();
+                this.Sprite.LoadContent(texture);
+            }
         }
 
         public override string ToString()

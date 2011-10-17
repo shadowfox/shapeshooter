@@ -90,6 +90,7 @@ namespace Common
 
         public Sprite(Texture2D texture)
         {
+            this.texture = texture;
             this.LoadContent(texture);
         }
 

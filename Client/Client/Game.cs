@@ -196,10 +196,8 @@ namespace Client
             switch (type)
             {
                 case MessageType.PlayerList:
-                    log.Info("GOT PLAYER LIST MESSAGE");
                     S_PlayerListMessage playerListMessage = new S_PlayerListMessage();
                     playerListMessage.Read(msg);
-                    log.Info("msg: {0}", playerListMessage);
                     break;
                 default:
                     log.Error("Unknown message type: {0}", type);

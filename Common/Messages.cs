@@ -27,7 +27,7 @@ namespace Common
             for (int i = 0; i < this.PlayerCount; i++)
             {
                 long RUI = msg.ReadInt64();
-                this.Players.Add(RUI, new Player(RUI));
+                this.Players.Add(RUI, new Player(RUI, true));
             }
         }
 

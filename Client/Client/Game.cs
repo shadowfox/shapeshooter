@@ -223,7 +223,7 @@ namespace Client
                     // A new player has joined, so add it to the local dictionary.
                     S_PlayerJoinMessage playerJoinMessage = new S_PlayerJoinMessage();
                     playerJoinMessage.Read(msg);
-                    PlayerManager.Add(playerJoinMessage.PlayerRUI, new Player(playerJoinMessage.PlayerRUI));
+                    PlayerManager.Add(playerJoinMessage.PlayerRUI, new Player(playerJoinMessage.PlayerRUI, true));
                     break;
                 case MessageType.PlayerList:
                     S_PlayerListMessage playerListMessage = new S_PlayerListMessage();
@@ -237,6 +237,7 @@ namespace Client
                         log.Error("Unable to find local player in player list");
                         client.Disconnect("Error");
                     }
+                    localPlayer.Sprite = new Sprite();
                     break;
                 default:
                     log.Error("Unknown message type: {0}", type);

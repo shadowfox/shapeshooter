@@ -101,11 +101,11 @@ namespace Server
                         NetConnectionStatus status = (NetConnectionStatus)msg.ReadByte();
                         if (status == NetConnectionStatus.Connected)
                         {
-                            log.Info("====> {0} connected", Helper.getRemoteTag(msg));
+                            log.Info("====> {0} connected ({1})", Helper.getRemoteTag(msg), msg.ReadString());
                         }
                         else if (status == NetConnectionStatus.Disconnected || status == NetConnectionStatus.Disconnecting)
                         {
-                            log.Info("<==== {0} disconnected", Helper.getRemoteTag(msg));
+                            log.Info("<==== {0} disconnected ({1})", Helper.getRemoteTag(msg), msg.ReadString());
                         }
                         break;
                     case NetIncomingMessageType.ConnectionApproval:

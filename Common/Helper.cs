@@ -18,6 +18,11 @@ namespace Common
             return NetUtility.ToHexString(msg.SenderConnection.RemoteUniqueIdentifier);
         }
 
+        public static string getRUIHex(long RUI)
+        {
+            return NetUtility.ToHexString(RUI);
+        }
+
         public static string getRemoteTag(NetIncomingMessage msg)
         {
             return String.Format("{0}:{1}", msg.SenderEndpoint.ToString(), getRUIHex(msg));

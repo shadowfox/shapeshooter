@@ -25,6 +25,10 @@ namespace Client
 
         // Networking related members
         private NetClient client;
+        public NetClient Client
+        {
+            get { return this.client; }
+        }
         private NetPeerConfiguration config;
         private NetIncomingMessage msg;
 
@@ -41,10 +45,15 @@ namespace Client
             graphics = new GraphicsDeviceManager(this);
             Content.RootDirectory = "Content";
 
+
             config = new NetPeerConfiguration(appName);
             config.EnableMessageType(NetIncomingMessageType.DiscoveryResponse);
 
             client = new NetClient(config);
+
+            NetDebugComponent netDebugComponent = new NetDebugComponent(this, ref client);
+            this.Components.Add(netDebugComponent);
+            netDebugComponent.Visible = true;
         }
 
         /// <summary>
@@ -80,7 +89,7 @@ namespace Client
             // Create a new SpriteBatch, which can be used to draw textures.
             spriteBatch = new SpriteBatch(GraphicsDevice);
 
-            // TODO: use this.Content to load your game content here
+            Resources.Load(Content);
         }
 
         /// <summary>
@@ -135,7 +144,7 @@ namespace Client
                         break;
                     case NetIncomingMessageType.StatusChanged:
                         NetConnectionStatus status = (NetConnectionStatus)msg.ReadByte();
-                        log.Info("StatusChanged: {0}", status);
+                        log.Info("StatusChanged: {0} ({1})", status, msg.ReadString());
                         break;
                     case NetIncomingMessageType.DiscoveryResponse:
                         handleDiscoveryResponseMessage(msg);

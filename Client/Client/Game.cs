@@ -53,19 +53,12 @@ namespace Client
         // Input data.
         KeyboardState keyboardState;
 
-        enum Input : byte
-        {
-            None = 0,
-            Up,
-            Down,
-            Left,
-            Right
-        }
-
         Input lastVInput = Input.None;
         Input currentVInput = Input.None;
         Input lastHInput = Input.None;
         Input currentHInput = Input.None;
+
+        bool sendNewInput = false;
 
         String vInput = "";
         String hInput = "";
@@ -166,18 +159,25 @@ namespace Client
             if (keyboardState.IsKeyDown(Keys.Right))
                 currentHInput = Input.Right;
 
+            sendNewInput = false;
+
             // Only send input data to the server if its different to the previous state.
             if (currentVInput != lastVInput)
             {
                 vInput = String.Format("VERTICAL was {0} | now {1}", lastVInput, currentVInput);
                 lastVInput = currentVInput;
+                sendNewInput = true;
             }
 
             if (currentHInput != lastHInput)
             {
                 hInput = String.Format("HORIZONTAL was {0} | now {1}", lastHInput, currentHInput);
                 lastHInput = currentHInput;
+                sendNewInput = true;
             }
+
+            if (sendNewInput)
+                sendInputMessage();
 
             handleMessages();
 
@@ -300,6 +300,21 @@ namespace Client
                     log.Error("Unknown message type: {0}", type);
                     break;
             }
+        }
+
+        /// <summary>
+        /// Sends the server vertical and horizontal input data.
+        /// </summary>
+        private void sendInputMessage()
+        {
+            NetOutgoingMessage om = client.CreateMessage();
+            C_PlayerPositionMessage playerPositionMessage = new C_PlayerPositionMessage()
+            {
+                HorizontalInput = currentHInput,
+                VerticalInput = currentVInput,
+            };
+            playerPositionMessage.Write(om);
+            client.SendMessage(om, NetDeliveryMethod.Unreliable);
         }
 
         /// <summary>

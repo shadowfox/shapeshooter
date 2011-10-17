@@ -13,6 +13,7 @@ namespace Common
         Special = 1,
         PlayerList = 2,
         PlayerJoin = 3,
+        PlayerPosition = 4,
     }
 
     public struct S_PlayerListMessage : ISendable
@@ -60,6 +61,26 @@ namespace Common
         {
             msg.Write((byte)this.MessageType);
             msg.Write(this.PlayerRUI);
+        }
+    }
+
+    public struct C_PlayerPositionMessage : ISendable
+    {
+        public MessageType MessageType { get { return MessageType.PlayerPosition; } }
+        public Input HorizontalInput;
+        public Input VerticalInput;
+
+        public void Read(NetIncomingMessage msg)
+        {
+            this.HorizontalInput = (Input)msg.ReadByte();
+            this.VerticalInput = (Input)msg.ReadByte();
+        }
+
+        public void Write(NetOutgoingMessage msg)
+        {
+            msg.Write((byte)this.MessageType);
+            msg.Write((byte)this.HorizontalInput);
+            msg.Write((byte)this.VerticalInput);
         }
     }
 

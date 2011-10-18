@@ -10,8 +10,7 @@ namespace Common
         private long _RUI;
         public long RUI { get { return _RUI; } }
         public string ID { get { return NetUtility.ToHexString(this._RUI); } }
-        private Vector2 position;
-        public Vector2 Position { get { return this.position; } }
+        public Vector2 Position;
 
         public Sprite Sprite = null;
 
@@ -33,7 +32,7 @@ namespace Common
 
         public override string ToString()
         {
-            return String.Format("Player[ID={0} X={1} Y={2}]", this.ID, this.position.X, this.position.Y);
+            return String.Format("Player[ID={0} X={1} Y={2}]", this.ID, this.Position.X, this.Position.Y);
         }
     }
 }

@@ -25,6 +25,7 @@ namespace Server
         private static bool isShuttingDown = false;
 
         private static PlayerManager playerManager;
+        private static long RUI;
 
         /// <summary>
         /// Server entry point
@@ -153,6 +154,20 @@ namespace Server
         /// <param name="msg"></param>
         private static void handleDataMessage(NetIncomingMessage msg)
         {
+            MessageType type = (MessageType)msg.ReadByte();
+            RUI = msg.SenderConnection.RemoteUniqueIdentifier;
+            switch(type)
+            {
+                case MessageType.PlayerPosition:
+                    log.Info("Got position update message for {0}", Helper.getRUIHex(RUI));
+                    C_PlayerPositionMessage playerPositionMessage = new C_PlayerPositionMessage();
+                    playerPositionMessage.Read(msg);
+                    playerManager.UpdatePlayerPosition(RUI, playerPositionMessage.Position);
+                    break;
+                default:
+                    log.Error("Unknown data message type: {0}", type);
+                    break;
+            }
         }
 
         /// <summary>

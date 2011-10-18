@@ -31,11 +31,11 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Lidgren.Network">
-      <HintPath>..\..\..\lidgren-network-gen3\Lidgren XNA Extensions\Lidgren XNA Extensions\bin\Release\Lidgren.Network.dll</HintPath>
+    <Reference Include="Lidgren.Network, Version=2011.3.12.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\..\lidgren-network-gen3\Lidgren XNA Extensions\Lidgren XNA Extensions\bin\Debug\Lidgren.Network.dll</HintPath>
     </Reference>
-    <Reference Include="Lidgren.Network.Xna">
-      <HintPath>..\..\..\lidgren-network-gen3\Lidgren XNA Extensions\Lidgren XNA Extensions\bin\Release\Lidgren.Network.Xna.dll</HintPath>
+    <Reference Include="Lidgren.Network.Xna, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\..\lidgren-network-gen3\Lidgren XNA Extensions\Lidgren XNA Extensions\bin\Debug\Lidgren.Network.Xna.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.Xna.Framework, Version=4.0.0.0, Culture=neutral, PublicKeyToken=842cf8be1de50553, processorArchitecture=x86" />
     <Reference Include="Microsoft.Xna.Framework.Graphics, Version=4.0.0.0, Culture=neutral, PublicKeyToken=842cf8be1de50553, processorArchitecture=x86" />
@@ -49,7 +49,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Helper.cs" />
-    <Compile Include="Input.cs" />
     <Compile Include="Logger.cs" />
     <Compile Include="Messages.cs" />
     <Compile Include="Player.cs" />

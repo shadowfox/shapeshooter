@@ -10,7 +10,9 @@ namespace Common
     /// </summary>
     public class PlayerManager
     {
+        Logger log;
         private Dictionary<long, Player> players;
+        private Player tempPlayer;
 
         public Dictionary<long, Player> Players
         {
@@ -31,6 +33,8 @@ namespace Common
         {
             // Initialise the player list.
             players = new Dictionary<long, Player>();
+
+            log = new Logger();
         }
 
         public void Draw(SpriteBatch spriteBatch)
@@ -38,6 +42,24 @@ namespace Common
             foreach (Player player in players.Values)
             {
                 player.Sprite.Draw(spriteBatch);
+            }
+        }
+
+        /// <summary>
+        /// Update a player's position given their RUI and the new position
+        /// </summary>
+        /// <param name="RUI"></param>
+        /// <param name="position"></param>
+        public void UpdatePlayerPosition(long RUI, Vector2 position)
+        {
+            if (this.players.TryGetValue(RUI, out tempPlayer))
+            {
+                tempPlayer.Position = position;
+                log.Info("Position of {0} is now {1}", Helper.getRUIHex(RUI), position);
+            }
+            else
+            {
+                log.Error("Could not find player with RUI {0}", RUI);
             }
         }
 

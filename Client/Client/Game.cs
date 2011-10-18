@@ -50,6 +50,12 @@ namespace Client
         private int serverPort = 42421;
         private string serverName = "";
 
+        KeyboardState newState;
+        KeyboardState oldState;
+
+        // The local player's old position vector.
+        Vector2 oldLocalPlayerPosition = Vector2.Zero;
+
         public Game()
         {
             log = new Logger();
@@ -130,6 +136,8 @@ namespace Client
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed)
                 this.Exit();
 
+            handleInput();
+
             handleMessages();
 
             base.Update(gameTime);
@@ -150,6 +158,43 @@ namespace Client
             spriteBatch.End();
 
             base.Draw(gameTime);
+        }
+
+        /// <summary>
+        /// Handle's the player's input
+        /// </summary>
+        private void handleInput()
+        {
+            // Don't handle input if we have no local player.
+            if (localPlayer == null)
+            {
+                log.Error("Tried to get input but localPlayer is required");
+                return;
+            }
+            newState = Keyboard.GetState();
+            oldLocalPlayerPosition = localPlayer.Position;
+
+            if (newState.IsKeyDown(Keys.Up))
+                localPlayer.Position.X -= 1;
+            if (newState.IsKeyDown(Keys.Down))
+                localPlayer.Position.X += 1;
+            if (newState.IsKeyDown(Keys.Left))
+                localPlayer.Position.Y -= 1;
+            if (newState.IsKeyDown(Keys.Right))
+                localPlayer.Position.Y += 1;
+
+            if (localPlayer.Position != oldLocalPlayerPosition)
+            {
+                // Position is different so we need to send it to the server.
+                C_PlayerPositionMessage playerPositionMessage = new C_PlayerPositionMessage()
+                {
+                    Position = localPlayer.Position
+                };
+                NetOutgoingMessage om = client.CreateMessage();
+                playerPositionMessage.Write(om);
+                client.SendMessage(om, NetDeliveryMethod.Unreliable);
+            }
+            oldState = newState;
         }
 
         /// <summary>

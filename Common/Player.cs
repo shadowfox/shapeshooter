@@ -1,6 +1,7 @@
 ﻿using System;
 using Lidgren.Network;
 using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework;
 
 namespace Common
 {
@@ -9,6 +10,8 @@ namespace Common
         private long _RUI;
         public long RUI { get { return _RUI; } }
         public string ID { get { return NetUtility.ToHexString(this._RUI); } }
+        private Vector2 position;
+        public Vector2 Position { get { return this.position; } }
 
         public Sprite Sprite = null;
 
@@ -30,7 +33,7 @@ namespace Common
 
         public override string ToString()
         {
-            return String.Format("Player[ID={0}]", this.ID);
+            return String.Format("Player[ID={0} X={1} Y={2}]", this.ID, this.position.X, this.position.Y);
         }
     }
 }

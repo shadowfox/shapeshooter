@@ -81,6 +81,45 @@ namespace Common
         }
     }
 
+    public struct S_PlayerPositionMessage : ISendable
+    {
+        public MessageType MessageType { get { return MessageType.PlayerPosition; } }
+        public int PlayerCount;
+        public List<long> RUIList;
+        public List<Vector2> PositionList;
+
+        public void Read(NetIncomingMessage msg)
+        {
+            this.PlayerCount = msg.ReadInt32();
+            for (int i = 0; i < this.PlayerCount; i++)
+            {
+                RUIList.Add(msg.ReadInt64());
+                PositionList.Add(XNAExtensions.ReadVector2(msg));
+            }
+        }
+
+        public void Write(NetOutgoingMessage msg)
+        {
+            msg.Write((byte)this.MessageType);
+            msg.Write(this.PlayerCount);
+            for (int i = 0; i < this.PlayerCount; i++)
+            {
+                msg.Write(this.RUIList[i]);
+                XNAExtensions.Write(msg, this.PositionList[i]);
+            }
+        }
+
+        public override string ToString()
+        {
+            String str = "" + this.PlayerCount + " players\n";
+            for (int i = 0; i < this.PlayerCount; i++)
+            {
+                str += "" + RUIList[i] + " ----- " + PositionList[i] + "\n";
+            }
+            return str;
+        }
+    }
+
     internal interface ISendable
     {
         MessageType MessageType { get; }

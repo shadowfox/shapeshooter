@@ -63,6 +63,18 @@ namespace Common
             }
         }
 
+        public void GetPositions(out List<long> RUIList, out List<Vector2> PositionList)
+        {
+            RUIList = new List<long>();
+            PositionList = new List<Vector2>();
+
+            foreach (KeyValuePair<long, Player> kvp in this.players)
+            {
+                RUIList.Add(kvp.Key);
+                PositionList.Add(kvp.Value.Position);
+            }
+        }
+
         #region Public dictionary access methods
         /// <summary>
         /// Public interface for adding objects.

@@ -4,6 +4,7 @@ using System.Threading;
 using Lidgren.Network;
 using Lidgren.Network.Xna;
 using Common;
+using Microsoft.Xna.Framework;
 
 namespace Server
 {
@@ -23,9 +24,13 @@ namespace Server
         private static int serverPort = 42421;
         private static string serverName = "Test Game Server";
         private static bool isShuttingDown = false;
+        private static double updatesPerSecond = 1.0;
 
         private static PlayerManager playerManager;
         private static long RUI;
+
+        private static double now;
+        private static double nextSendUpdates;
 
         /// <summary>
         /// Server entry point
@@ -42,6 +47,8 @@ namespace Server
                     break;
 
                 handleIncomingMessages();
+
+                handleOutgoingMessages();
 
                 // sleep to allow other processes to run smoothly
                 Thread.Sleep(1);
@@ -70,6 +77,7 @@ namespace Server
             try
             {
                 server.Start();
+                nextSendUpdates = NetTime.Now;
                 Thread.Sleep(500);
                 log.Info("Server started with status {0} on port {1}", server.Status, serverPort);
             }
@@ -181,6 +189,44 @@ namespace Server
 
             responseMessage.Write(serverName);
             server.SendDiscoveryResponse(responseMessage, msg.SenderEndpoint);
+        }
+
+        /// <summary>
+        /// Prepares and sends all pending outgoing messages.
+        /// </summary>
+        private static void handleOutgoingMessages()
+        {
+            // Send updates 30 times per second.
+            now = NetTime.Now;
+            if (now > nextSendUpdates)
+            {
+                log.Info("SENDING UPDATES!");
+                // Prepare a player position packet of every player with a 'dirty' position.
+                List<long> RUIList;
+                List<Vector2> positionList;
+                playerManager.GetPositions(out RUIList, out positionList);
+                S_PlayerPositionMessage playerPositionMessage = new S_PlayerPositionMessage()
+                {
+                    PlayerCount = playerManager.Players.Count,
+                    RUIList = RUIList,
+                    PositionList = positionList
+                };
+
+                Console.WriteLine(playerPositionMessage.ToString());
+                
+                NetOutgoingMessage om = server.CreateMessage();
+                playerPositionMessage.Write(om);
+                
+                // Send to each connection.
+                foreach (NetConnection connection in server.Connections)
+                {
+                    server.SendToAll(om, NetDeliveryMethod.Unreliable);
+                }
+
+                nextSendUpdates += (1.0 / updatesPerSecond);
+            }
+
+            
         }
     }
 }

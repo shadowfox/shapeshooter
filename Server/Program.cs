@@ -24,7 +24,7 @@ namespace Server
         private static int serverPort = 42421;
         private static string serverName = "Test Game Server";
         private static bool isShuttingDown = false;
-        private static double updatesPerSecond = 1.0;
+        private static double updatesPerSecond = 20.0;
 
         private static PlayerManager playerManager;
         private static long RUI;

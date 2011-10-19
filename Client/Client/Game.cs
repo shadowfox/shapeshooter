@@ -49,6 +49,9 @@ namespace Client
         private string serverAddress = "localhost";
         private int serverPort = 42421;
         private string serverName = "";
+        private double now;
+        private double nextSendUpdates;
+        private double updatesPerSecond = 20.0;
 
         KeyboardState newState;
         KeyboardState oldState;
@@ -140,6 +143,8 @@ namespace Client
 
             handleMessages();
 
+            sendMessages();
+
             base.Update(gameTime);
         }
 
@@ -183,17 +188,9 @@ namespace Client
             if (newState.IsKeyDown(Keys.Right))
                 localPlayer.Position.X += 1;
 
-            if (localPlayer.Position != oldLocalPlayerPosition)
-            {
-                // Position is different so we need to send it to the server.
-                C_PlayerPositionMessage playerPositionMessage = new C_PlayerPositionMessage()
-                {
-                    Position = localPlayer.Position
-                };
-                NetOutgoingMessage om = client.CreateMessage();
-                playerPositionMessage.Write(om);
-                client.SendMessage(om, NetDeliveryMethod.Unreliable);
-            }
+            // Flag the local player's position for sending if it has changed.
+            localPlayer.DirtyPosition = (localPlayer.Position != oldLocalPlayerPosition);
+
             oldState = newState;
         }
 
@@ -306,6 +303,25 @@ namespace Client
             }
         }
 
+        private void sendMessages()
+        {
+            now = NetTime.Now;
+            if (now > nextSendUpdates)
+            {
+                if (localPlayer != null && localPlayer.DirtyPosition)
+                {
+                    // Send our position to the server.
+                    C_PlayerPositionMessage playerPositionMessage = new C_PlayerPositionMessage()
+                    {
+                        Position = localPlayer.Position
+                    };
+                    NetOutgoingMessage om = client.CreateMessage();
+                    playerPositionMessage.Write(om);
+                    client.SendMessage(om, NetDeliveryMethod.Unreliable);
+                }
+                nextSendUpdates += (1.0 / updatesPerSecond);
+            }
+        }
         /// <summary>
         /// Clear all of the client's data so things are clean for a reconnect.
         /// </summary>

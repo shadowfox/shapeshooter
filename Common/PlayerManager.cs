@@ -41,7 +41,7 @@ namespace Common
         {
             foreach (Player player in players.Values)
             {
-                player.Sprite.Draw(spriteBatch, player.Position);
+                player.Sprite.Draw(spriteBatch, player.Position, player.Color);
             }
         }
 

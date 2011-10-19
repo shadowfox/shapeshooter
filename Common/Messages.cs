@@ -23,6 +23,7 @@ namespace Common
         public Dictionary<long, Player> Players;
 
         public Texture2D playerTexture;
+        public Color Color;
 
         public void Read(NetIncomingMessage msg)
         {
@@ -31,7 +32,10 @@ namespace Common
             for (int i = 0; i < this.PlayerCount; i++)
             {
                 long RUI = msg.ReadInt64();
-                this.Players.Add(RUI, new Player(RUI, playerTexture));
+                Vector2 position = msg.ReadVector2();
+                Player player = new Player(RUI, playerTexture, new Color(msg.ReadByte(), msg.ReadByte(), msg.ReadByte()));
+                player.Position = position;
+                this.Players.Add(RUI, player);
             }
         }
 
@@ -43,6 +47,10 @@ namespace Common
             {
                 // RUI
                 msg.Write(kvp.Key);
+                msg.Write(kvp.Value.Position);
+                msg.Write(kvp.Value.Color.R);
+                msg.Write(kvp.Value.Color.B);
+                msg.Write(kvp.Value.Color.G);
             }
         }
     }
@@ -51,16 +59,21 @@ namespace Common
     {
         public MessageType MessageType { get { return MessageType.PlayerJoin; } }
         public long PlayerRUI;
+        public Color Color;
 
         public void Read(NetIncomingMessage msg)
         {
             this.PlayerRUI = msg.ReadInt64();
+            this.Color = new Color(msg.ReadByte(), msg.ReadByte(), msg.ReadByte());
         }
 
         public void Write(NetOutgoingMessage msg)
         {
             msg.Write((byte)this.MessageType);
             msg.Write(this.PlayerRUI);
+            msg.Write(this.Color.R);
+            msg.Write(this.Color.B);
+            msg.Write(this.Color.G);
         }
     }
 
@@ -107,16 +120,6 @@ namespace Common
                 msg.Write(this.RUIList[i]);
                 XNAExtensions.Write(msg, this.PositionList[i]);
             }
-        }
-
-        public override string ToString()
-        {
-            String str = "" + this.PlayerCount + " players\n";
-            for (int i = 0; i < this.PlayerCount; i++)
-            {
-                str += "" + RUIList[i] + " ----- " + PositionList[i] + "\n";
-            }
-            return str;
         }
     }
 

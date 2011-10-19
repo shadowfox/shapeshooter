@@ -129,6 +129,14 @@ namespace Common
                 Color.White, this.rotation, origin, Scale, SpriteEffects.None, 0);
         }
 
+        // Draw the sprite to the screen with a given position and colour.
+        public void Draw(SpriteBatch theSpriteBatch, Vector2 position, Color color)
+        {
+            theSpriteBatch.Draw(texture, position,
+                new Rectangle(0, 0, texture.Width, texture.Height),
+                color, this.rotation, origin, Scale, SpriteEffects.None, 0);
+        }
+
         // Draw the sprite to the screen with a given rotation.
         public void Draw(SpriteBatch theSpriteBatch, float rotation)
         {

@@ -51,8 +51,8 @@ namespace Client
         private string serverName = "";
         private double now;
         private double nextSendUpdates;
-        private double updatesPerSecond = 20.0;
-        private int moveSpeed = 3;
+        private double updatesPerSecond = 30.0;
+        private int moveSpeed = 4;
 
         KeyboardState newState;
         KeyboardState oldState;
@@ -266,7 +266,6 @@ namespace Client
             //log.Info("Got data message: {0}", msg);
 
             MessageType type = (MessageType)msg.ReadByte();
-            log.Info("Message is of type {0}", type);
             switch (type)
             {
                 case MessageType.PlayerPosition:
@@ -277,7 +276,6 @@ namespace Client
                         PositionList = new List<Vector2>()
                     };
                     playerPositionMessage.Read(msg);
-                    log.Info(playerPositionMessage.ToString());
                     playerManager.UpdatePositions(playerPositionMessage.PlayerCount,
                         playerPositionMessage.RUIList, playerPositionMessage.PositionList);
                     break;
@@ -285,7 +283,8 @@ namespace Client
                     // A new player has joined, so add it to the local dictionary.
                     S_PlayerJoinMessage playerJoinMessage = new S_PlayerJoinMessage();
                     playerJoinMessage.Read(msg);
-                    PlayerManager.Add(playerJoinMessage.PlayerRUI, new Player(playerJoinMessage.PlayerRUI, Resources.playerTexture));
+                    PlayerManager.Add(playerJoinMessage.PlayerRUI, 
+                        new Player(playerJoinMessage.PlayerRUI, Resources.playerTexture, playerJoinMessage.Color));
                     break;
                 case MessageType.PlayerList:
                     S_PlayerListMessage playerListMessage = new S_PlayerListMessage();

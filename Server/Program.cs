@@ -24,7 +24,7 @@ namespace Server
         private static int serverPort = 42421;
         private static string serverName = "Test Game Server";
         private static bool isShuttingDown = false;
-        private static double updatesPerSecond = 20.0;
+        private static double updatesPerSecond = 30.0;
 
         private static PlayerManager playerManager;
         private static long RUI;
@@ -125,7 +125,7 @@ namespace Server
                             S_PlayerListMessage playerListMessage = new S_PlayerListMessage()
                             {
                                 PlayerCount = playerManager.Count,
-                                Players = playerManager.Players
+                                Players = playerManager.Players,
                             };
                             playerListMessage.Write(om);
                             server.SendMessage(om, msg.SenderConnection, NetDeliveryMethod.ReliableUnordered);
@@ -134,7 +134,8 @@ namespace Server
                             om = server.CreateMessage();
                             S_PlayerJoinMessage playerJoinMessage = new S_PlayerJoinMessage()
                             {
-                                PlayerRUI = player.RUI
+                                PlayerRUI = player.RUI,
+                                Color = player.Color
                             };
                             playerJoinMessage.Write(om);
                             server.SendToAll(om, msg.SenderConnection, NetDeliveryMethod.ReliableUnordered, 0);
@@ -167,7 +168,6 @@ namespace Server
             switch(type)
             {
                 case MessageType.PlayerPosition:
-                    log.Info("Got position update message for {0}", Helper.getRUIHex(RUI));
                     C_PlayerPositionMessage playerPositionMessage = new C_PlayerPositionMessage();
                     playerPositionMessage.Read(msg);
                     playerManager.UpdatePlayerPosition(RUI, playerPositionMessage.Position);

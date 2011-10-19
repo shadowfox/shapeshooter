@@ -119,6 +119,7 @@ namespace Server
 
                             // Add the new player to the player list.
                             Player player = new Player(msg.SenderConnection.RemoteUniqueIdentifier);
+                            player.Position = new Vector2(gameWidth / 2, gameHeight / 2);
                             playerManager.Add(msg.SenderConnection.RemoteUniqueIdentifier, player);
 
                             // Send them a list of all players in the game.

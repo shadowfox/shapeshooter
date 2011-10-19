@@ -65,6 +65,7 @@ namespace Client
         {
             log = new Logger();
             log.Info("Setting up game...");
+            Window.Title = "Test Client";
             graphics = new GraphicsDeviceManager(this);
             Content.RootDirectory = "Content";
 

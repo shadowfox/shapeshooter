@@ -202,9 +202,10 @@ namespace Server
             {
                 log.Info("SENDING UPDATES!");
                 // Prepare a player position packet of every player with a 'dirty' position.
+                int playerCount;
                 List<long> RUIList;
                 List<Vector2> positionList;
-                playerManager.GetPositions(out RUIList, out positionList);
+                playerManager.GetPositions(out playerCount, out RUIList, out positionList);
                 S_PlayerPositionMessage playerPositionMessage = new S_PlayerPositionMessage()
                 {
                     PlayerCount = playerManager.Players.Count,
@@ -212,19 +213,22 @@ namespace Server
                     PositionList = positionList
                 };
 
-                Console.WriteLine(playerPositionMessage.ToString());
-                
-                NetOutgoingMessage om = server.CreateMessage();
-                playerPositionMessage.Write(om);
-                
-                // Send to each connection.
-                try
+                if (playerCount > 0)
                 {
-                    server.SendToAll(om, NetDeliveryMethod.Unreliable);
-                }
-                catch (NetException e)
-                {
+                    Console.WriteLine(playerPositionMessage.ToString());
+                    // There are updates to send, so send them.
+                    NetOutgoingMessage om = server.CreateMessage();
+                    playerPositionMessage.Write(om);
 
+                    // Send to each connection.
+                    try
+                    {
+                        server.SendToAll(om, NetDeliveryMethod.Unreliable);
+                    }
+                    catch (NetException e)
+                    {
+
+                    }
                 }
 
                 nextSendUpdates += (1.0 / updatesPerSecond);

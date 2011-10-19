@@ -63,15 +63,20 @@ namespace Common
             }
         }
 
-        public void GetPositions(out List<long> RUIList, out List<Vector2> PositionList)
+        public void GetPositions(out int playerCount, out List<long> RUIList, out List<Vector2> PositionList)
         {
+            playerCount = 0;
             RUIList = new List<long>();
             PositionList = new List<Vector2>();
 
             foreach (KeyValuePair<long, Player> kvp in this.players)
             {
-                RUIList.Add(kvp.Key);
-                PositionList.Add(kvp.Value.Position);
+                if (kvp.Value.DirtyPosition)
+                {
+                    playerCount++;
+                    RUIList.Add(kvp.Key);
+                    PositionList.Add(kvp.Value.Position);
+                }
             }
         }
 

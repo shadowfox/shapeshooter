@@ -11,6 +11,7 @@ namespace Common
         public long RUI { get { return _RUI; } }
         public string ID { get { return NetUtility.ToHexString(this._RUI); } }
         public Vector2 Position;
+        public bool DirtyPosition;
 
         public Sprite Sprite = null;
 
@@ -23,6 +24,7 @@ namespace Common
         {
             Console.WriteLine("Player() called including texture " + texture);
             this._RUI = RUI;
+            this.DirtyPosition = false;
             if (texture != null)
             {
                 this.Sprite = new Sprite();

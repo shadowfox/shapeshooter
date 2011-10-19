@@ -41,7 +41,7 @@ namespace Common
         {
             foreach (Player player in players.Values)
             {
-                player.Sprite.Draw(spriteBatch);
+                player.Sprite.Draw(spriteBatch, player.Position);
             }
         }
 
@@ -72,6 +72,28 @@ namespace Common
             {
                 RUIList.Add(kvp.Key);
                 PositionList.Add(kvp.Value.Position);
+            }
+        }
+
+        public void UpdatePositions(int playerCount, List<long> RUIList, List<Vector2> positionList)
+        {
+            if (RUIList.Count != positionList.Count)
+            {
+                log.Error("RUI LIST AND PLAYER POSITION LIST ARE OUT OF SYNC !!!!!!!!!!");
+            }
+            else
+            {
+                for (int i = 0; i < playerCount; i++)
+                {
+                    if (this.players.TryGetValue(RUIList[i], out tempPlayer))
+                    {
+                        tempPlayer.Position = positionList[i];
+                    }
+                    else
+                    {
+                        log.Error("Could not find player with RUI {0}", RUIList[i]);
+                    }
+                }
             }
         }
 

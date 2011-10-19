@@ -268,6 +268,17 @@ namespace Client
             log.Info("Message is of type {0}", type);
             switch (type)
             {
+                case MessageType.PlayerPosition:
+                    // Batch player position message.
+                    S_PlayerPositionMessage playerPositionMessage = new S_PlayerPositionMessage()
+                    {
+                        RUIList = new List<long>(),
+                        PositionList = new List<Vector2>()
+                    };
+                    playerPositionMessage.Read(msg);
+                    playerManager.UpdatePositions(playerPositionMessage.PlayerCount,
+                        playerPositionMessage.RUIList, playerPositionMessage.PositionList);
+                    break;
                 case MessageType.PlayerJoin:
                     // A new player has joined, so add it to the local dictionary.
                     S_PlayerJoinMessage playerJoinMessage = new S_PlayerJoinMessage();

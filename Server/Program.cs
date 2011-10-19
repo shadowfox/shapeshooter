@@ -200,7 +200,7 @@ namespace Server
             now = NetTime.Now;
             if (now > nextSendUpdates)
             {
-                log.Info("SENDING UPDATES!");
+                //log.Info("SENDING UPDATES!");
                 // Prepare a player position packet of every player with a 'dirty' position.
                 int playerCount;
                 List<long> RUIList;
@@ -208,14 +208,14 @@ namespace Server
                 playerManager.GetPositions(out playerCount, out RUIList, out positionList);
                 S_PlayerPositionMessage playerPositionMessage = new S_PlayerPositionMessage()
                 {
-                    PlayerCount = playerManager.Players.Count,
+                    PlayerCount = playerCount,
                     RUIList = RUIList,
                     PositionList = positionList
                 };
 
                 if (playerCount > 0)
                 {
-                    Console.WriteLine(playerPositionMessage.ToString());
+                    //Console.WriteLine(playerPositionMessage.ToString());
                     // There are updates to send, so send them.
                     NetOutgoingMessage om = server.CreateMessage();
                     playerPositionMessage.Write(om);

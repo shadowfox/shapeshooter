@@ -55,7 +55,8 @@ namespace Common
             if (this.players.TryGetValue(RUI, out tempPlayer))
             {
                 tempPlayer.Position = position;
-                log.Info("Position of {0} is now {1}", Helper.getRUIHex(RUI), position);
+                tempPlayer.DirtyPosition = true;
+                //log.Info("Position of {0} is now {1}", Helper.getRUIHex(RUI), position);
             }
             else
             {
@@ -73,6 +74,8 @@ namespace Common
             {
                 if (kvp.Value.DirtyPosition)
                 {
+                    // Reset the dirty flag.
+                    kvp.Value.DirtyPosition = false;
                     playerCount++;
                     RUIList.Add(kvp.Key);
                     PositionList.Add(kvp.Value.Position);

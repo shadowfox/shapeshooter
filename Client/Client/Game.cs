@@ -52,11 +52,13 @@ namespace Client
         private double now;
         private double nextSendUpdates;
         private double updatesPerSecond = 20.0;
+        private int moveSpeed = 3;
 
         KeyboardState newState;
         KeyboardState oldState;
 
-        // The local player's old position vector.
+        // The local player's new and old position vector.
+        Vector2 newLocalPlayerPosition = Vector2.Zero;
         Vector2 oldLocalPlayerPosition = Vector2.Zero;
 
         public Game()
@@ -177,19 +179,21 @@ namespace Client
                 return;
             }
             newState = Keyboard.GetState();
+
             oldLocalPlayerPosition = localPlayer.Position;
+            newLocalPlayerPosition = localPlayer.Position;
 
             if (newState.IsKeyDown(Keys.Up))
-                localPlayer.Position.Y -= 1;
+                newLocalPlayerPosition.Y -= moveSpeed;
             if (newState.IsKeyDown(Keys.Down))
-                localPlayer.Position.Y += 1;
+                newLocalPlayerPosition.Y += moveSpeed;
             if (newState.IsKeyDown(Keys.Left))
-                localPlayer.Position.X -= 1;
+                newLocalPlayerPosition.X -= moveSpeed;
             if (newState.IsKeyDown(Keys.Right))
-                localPlayer.Position.X += 1;
+                newLocalPlayerPosition.X += moveSpeed;
 
             // Flag the local player's position for sending if it has changed.
-            localPlayer.DirtyPosition = (localPlayer.Position != oldLocalPlayerPosition);
+            localPlayer.DirtyPosition = (newLocalPlayerPosition != oldLocalPlayerPosition);
 
             oldState = newState;
         }
@@ -259,7 +263,7 @@ namespace Client
 
         private void handleDataMessage(NetIncomingMessage msg)
         {
-            log.Info("Got data message: {0}", msg);
+            //log.Info("Got data message: {0}", msg);
 
             MessageType type = (MessageType)msg.ReadByte();
             log.Info("Message is of type {0}", type);
@@ -273,6 +277,7 @@ namespace Client
                         PositionList = new List<Vector2>()
                     };
                     playerPositionMessage.Read(msg);
+                    log.Info(playerPositionMessage.ToString());
                     playerManager.UpdatePositions(playerPositionMessage.PlayerCount,
                         playerPositionMessage.RUIList, playerPositionMessage.PositionList);
                     break;
@@ -308,17 +313,20 @@ namespace Client
             now = NetTime.Now;
             if (now > nextSendUpdates)
             {
+                //if (localPlayer != null && localPlayer.DirtyPosition)
+                //{
+                    // Send our position to the server.
                 if (localPlayer != null && localPlayer.DirtyPosition)
                 {
-                    // Send our position to the server.
                     C_PlayerPositionMessage playerPositionMessage = new C_PlayerPositionMessage()
                     {
-                        Position = localPlayer.Position
+                        Position = newLocalPlayerPosition
                     };
                     NetOutgoingMessage om = client.CreateMessage();
                     playerPositionMessage.Write(om);
                     client.SendMessage(om, NetDeliveryMethod.Unreliable);
                 }
+               // }
                 nextSendUpdates += (1.0 / updatesPerSecond);
             }
         }

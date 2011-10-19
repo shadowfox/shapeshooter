@@ -25,6 +25,8 @@ namespace Server
         private static string serverName = "Test Game Server";
         private static bool isShuttingDown = false;
         private static double updatesPerSecond = 30.0;
+        private static int gameHeight = 500;
+        private static int gameWidth = 1000;
 
         private static PlayerManager playerManager;
         private static long RUI;
@@ -188,6 +190,8 @@ namespace Server
             NetOutgoingMessage responseMessage = server.CreateMessage();
 
             responseMessage.Write(serverName);
+            responseMessage.Write(gameHeight);
+            responseMessage.Write(gameWidth);
             server.SendDiscoveryResponse(responseMessage, msg.SenderEndpoint);
         }
 

@@ -53,6 +53,8 @@ namespace Client
         private double nextSendUpdates;
         private double updatesPerSecond = 30.0;
         private int moveSpeed = 4;
+        int gameHeight;
+        int gameWidth;
 
         KeyboardState newState;
         KeyboardState oldState;
@@ -65,7 +67,10 @@ namespace Client
         {
             log = new Logger();
             log.Info("Setting up game...");
+
             Window.Title = "Test Client";
+            Window.AllowUserResizing = false;
+
             graphics = new GraphicsDeviceManager(this);
             Content.RootDirectory = "Content";
 
@@ -249,7 +254,10 @@ namespace Client
                 if (client.Connect(msg.SenderEndpoint) != null)
                 {
                     serverName = msg.ReadString();
+                    gameHeight = msg.ReadInt32();
+                    gameWidth = msg.ReadInt32();
                     log.Info("Connection with '{0}' at {1} established!", serverName, msg.SenderEndpoint);
+                    changeScreenSize(gameHeight, gameWidth);
                 }
                 else
                 {
@@ -330,6 +338,7 @@ namespace Client
                 nextSendUpdates += (1.0 / updatesPerSecond);
             }
         }
+
         /// <summary>
         /// Clear all of the client's data so things are clean for a reconnect.
         /// </summary>
@@ -337,6 +346,21 @@ namespace Client
         {
             localPlayer = null;
             playerManager.Clear();
+        }
+
+        private void changeScreenSize(int height, int width)
+        {
+            log.Info("Server wants window size to be {0}x{1}", width, height);
+            try
+            {
+                graphics.PreferredBackBufferWidth = width;
+                graphics.PreferredBackBufferHeight = height;
+                graphics.ApplyChanges();
+            }
+            catch (Exception e)
+            {
+                log.Error("Failed to change screen size: {0}", e);
+            }
         }
     }
 }

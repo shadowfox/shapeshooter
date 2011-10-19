@@ -218,9 +218,13 @@ namespace Server
                 playerPositionMessage.Write(om);
                 
                 // Send to each connection.
-                foreach (NetConnection connection in server.Connections)
+                try
                 {
                     server.SendToAll(om, NetDeliveryMethod.Unreliable);
+                }
+                catch (NetException e)
+                {
+
                 }
 
                 nextSendUpdates += (1.0 / updatesPerSecond);

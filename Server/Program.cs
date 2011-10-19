@@ -74,7 +74,7 @@ namespace Server
             // ConnectionApproval received once a client runs Connect(); must be explicitly approved or denied.
             config.EnableMessageType(NetIncomingMessageType.ConnectionApproval);
 
-            playerManager = new PlayerManager();
+            playerManager = new PlayerManager(gameHeight, gameWidth);
             server = new NetServer(config);
             try
             {

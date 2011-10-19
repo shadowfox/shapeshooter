@@ -14,6 +14,9 @@ namespace Common
         private Dictionary<long, Player> players;
         private Player tempPlayer;
 
+        public int GameWidth = 300;
+        public int GameHeight = 300;
+
         public Dictionary<long, Player> Players
         {
             get { return this.players; }
@@ -35,6 +38,13 @@ namespace Common
             players = new Dictionary<long, Player>();
 
             log = new Logger();
+        }
+
+        public PlayerManager(int gameHeight, int gameWidth)
+            : this()
+        {
+            this.GameHeight = gameHeight;
+            this.GameWidth = gameWidth;
         }
 
         public void Draw(SpriteBatch spriteBatch)
@@ -96,6 +106,22 @@ namespace Common
                     if (this.players.TryGetValue(RUIList[i], out tempPlayer))
                     {
                         tempPlayer.Position = positionList[i];
+                        if (tempPlayer.Position.X + tempPlayer.Sprite.Width < 0)
+                        {
+                            tempPlayer.Position = new Vector2(GameWidth, tempPlayer.Position.Y);
+                        }
+                        if (tempPlayer.Position.X - tempPlayer.Sprite.Width > GameWidth)
+                        {
+                            tempPlayer.Position = new Vector2(0, tempPlayer.Position.Y);
+                        }
+                        if (tempPlayer.Position.Y + tempPlayer.Sprite.Height < 0)
+                        {
+                            tempPlayer.Position = new Vector2(tempPlayer.Position.X, GameHeight);
+                        }
+                        if (tempPlayer.Position.Y - tempPlayer.Sprite.Height > GameHeight)
+                        {
+                            tempPlayer.Position = new Vector2(tempPlayer.Position.X, 0);
+                        }
                     }
                     else
                     {

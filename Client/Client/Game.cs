@@ -356,6 +356,9 @@ namespace Client
                 graphics.PreferredBackBufferWidth = width;
                 graphics.PreferredBackBufferHeight = height;
                 graphics.ApplyChanges();
+
+                playerManager.GameWidth = width;
+                playerManager.GameHeight = height;
             }
             catch (Exception e)
             {

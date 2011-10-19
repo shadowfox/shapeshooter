@@ -175,13 +175,13 @@ namespace Client
             oldLocalPlayerPosition = localPlayer.Position;
 
             if (newState.IsKeyDown(Keys.Up))
-                localPlayer.Position.X -= 1;
-            if (newState.IsKeyDown(Keys.Down))
-                localPlayer.Position.X += 1;
-            if (newState.IsKeyDown(Keys.Left))
                 localPlayer.Position.Y -= 1;
-            if (newState.IsKeyDown(Keys.Right))
+            if (newState.IsKeyDown(Keys.Down))
                 localPlayer.Position.Y += 1;
+            if (newState.IsKeyDown(Keys.Left))
+                localPlayer.Position.X -= 1;
+            if (newState.IsKeyDown(Keys.Right))
+                localPlayer.Position.X += 1;
 
             if (localPlayer.Position != oldLocalPlayerPosition)
             {

@@ -11,6 +11,7 @@ using Microsoft.Xna.Framework.Media;
 using Lidgren.Network;
 using Lidgren.Network.Xna;
 using Common;
+using System.IO;
 
 namespace Client
 {
@@ -67,6 +68,8 @@ namespace Client
         {
             log = new Logger();
             log.Info("Setting up game...");
+
+            trySetConnectDetails();
 
             Window.Title = "Test Client";
             Window.AllowUserResizing = false;
@@ -346,6 +349,21 @@ namespace Client
         {
             localPlayer = null;
             playerManager.Clear();
+        }
+
+        private void trySetConnectDetails()
+        {
+            try
+            {
+                StreamReader file = new StreamReader("connect.txt");
+                serverAddress = file.ReadLine().Trim();
+                serverPort = int.Parse(file.ReadLine().Trim());
+                file.Close();
+            }
+            catch (Exception e)
+            {
+                log.Error("Failed to get connecting details. Continuing with defaults {0}:{1}", serverAddress, serverPort);
+            }
         }
 
         private void changeScreenSize(int height, int width)

@@ -48,7 +48,7 @@ namespace Client
         // Network client config
         private string appName = "testgame";
         private string serverAddress = "localhost";
-        private int serverPort = 42421;
+        private int serverPort = 14242;
         private string serverName = "";
         private double now;
         private double nextSendUpdates;
@@ -234,7 +234,7 @@ namespace Client
                     case NetIncomingMessageType.DebugMessage:
                     case NetIncomingMessageType.WarningMessage:
                     case NetIncomingMessageType.ErrorMessage:
-                        log.Info("Message from server: {0}", msg);
+                        log.Info("Lidgren message: {0}", msg.ReadString());
                         break;
                     default:
                         log.Info("Unhandled message type: {0}", msg.MessageType);

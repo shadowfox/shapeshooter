@@ -21,12 +21,12 @@ namespace Server
 
         // Server information.
         private static string appName = "testgame"; // Must be the same between server and client.
-        private static int serverPort = 42421;
+        private static int serverPort = 14242;
         private static string serverName = "Test Game Server";
         private static bool isShuttingDown = false;
         private static double updatesPerSecond = 30.0;
-        private static int gameHeight = 500;
-        private static int gameWidth = 1000;
+        private static int gameHeight = 400;
+        private static int gameWidth = 400;
 
         private static PlayerManager playerManager;
         private static long RUI;
@@ -109,7 +109,7 @@ namespace Server
                     case NetIncomingMessageType.DebugMessage:
                     case NetIncomingMessageType.WarningMessage:
                     case NetIncomingMessageType.ErrorMessage:
-                        log.Info("Message from client: " + msg.ReadString());
+                        log.Info("Lidgren message: " + msg.ReadString());
                         break;
                     case NetIncomingMessageType.StatusChanged:
                         NetConnectionStatus status = (NetConnectionStatus)msg.ReadByte();
